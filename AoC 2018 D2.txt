@@ -1,0 +1,120 @@
+Sub AoC2018_D2()
+'
+'I can't install python on this laptop so we are bludgeoning day 2 with VBA/excel again, going to attempt and avoid the spreadsheet this time
+
+'
+Dim Checksum, count2, count3, Limit As Double
+Dim Textfile, i, j As Integer
+
+'file IO shit
+Dim Filepath As String
+Dim InputFile As String
+Dim Inputarray() As String
+Dim Alphabet As String
+
+
+'get string shit as string
+Filepath = "C:\Users\machad\Desktop\Advent of Code 2018\AoC 2018 D2 input.txt"
+Textfile = FreeFile
+Open Filepath For Input As Textfile
+InputFile = Input(LOF(Textfile), Textfile)
+
+'make string array so I can go through it line by line
+Inputarray = Split(InputFile, vbCrLf)
+'count elements in array
+Limit = UBound(Split(InputFile, vbCrLf))
+
+'cheating lazy me
+Alphabet = "abcdefghijklmnopqrstuvwxyz"
+Checksum = 0
+count2 = 0
+count3 = 0
+
+'test for character count duplicates
+'I could put the 2 and 3 cound together but I'm lazy so I'm making a seperate nested loop
+For i = 0 To Limit
+    For j = 1 To 26
+        If count_char(Inputarray(i), (Mid(Alphabet, j, 1))) = 2 Then
+            count2 = count2 + 1
+            Exit For
+        End If
+    
+        Next j
+    
+    Next i
+'test for char count triplicates
+For i = 0 To Limit
+    For j = 1 To 26
+        If count_char(Inputarray(i), (Mid(Alphabet, j, 1))) = 3 Then
+            count3 = count3 + 1
+            Exit For
+        End If
+    Next j
+Next i
+
+MsgBox ("the count of 2 repeats is " & count2 & " and the count of 3 repeats is " & count3)
+
+Checksum = (count2 * count3)
+MsgBox "The Checksum is " & Checksum, , "Advent of Code 2018 D2P1"
+Worksheets("sheet1").Cells(1, "A").Value = Checksum
+'~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+'part two, find elements int he list such that if the same letter is removed from the same position,
+'the remaining letters match
+
+'note that each string has length of 26 char in my input, but I'll make this dynamic
+Dim Stringholder As String
+Dim size, k As Integer
+Dim answer As String
+Dim array25() As String
+ReDim Preserve array25(Limit)
+size = Len(Inputarray(1))
+
+'testing removing one char and rebuilding a string
+'MsgBox Left(Inputarray(j), 1 - 1) & Right(Inputarray(j), (size - 1))
+'yup, it works
+
+'outer loop checks each character position for string of length size
+For i = 1 To size
+    'inner loop creates holder array where each string is size -1, same order as inputarray
+    For j = 0 To Limit
+
+        array25(j) = Left(Inputarray(j), i - 1) & Right(Inputarray(j), (size - i))
+        'inner most loop is going to run a check for each line's presence twice.. somehow
+
+    Next j
+    For k = 0 To Limit
+        Stringholder = array25(k)
+        array25(k) = ""
+        If IsInArray(Stringholder, array25) Then
+            answer = Stringholder
+            Exit For
+            End If
+        array25(k) = Stringholder
+    Next k
+Next i
+MsgBox answer
+Worksheets("sheet1").Cells(2, "A").Value = answer
+
+End Sub
+
+Function count_char(varinput As String, var As String)
+
+    count_char = (Len(varinput) - (Len(Replace(varinput, var, ""))))
+    
+End Function
+Private Function IsInArray(valToBeFound As Variant, arr As Variant) As Boolean
+
+Dim element As Variant
+On Error GoTo IsInArrayError: 'array is empty
+    For Each element In arr
+        If element = valToBeFound Then
+            IsInArray = True
+            Exit Function
+        End If
+    Next element
+Exit Function
+IsInArrayError:
+On Error GoTo 0
+IsInArray = False
+End Function
+
