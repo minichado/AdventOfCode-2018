@@ -23,7 +23,7 @@ MsgBox ("the sum of the values is " & summe)
 'AoC 2018 D1P2
 '-----------------------------------------------------------
 'I like to hide that excel is actually selecting shit so it
-'sroll around like mad
+'doesn't scroll around like mad
 Application.ScreenUpdating = False
 
 'I need some arrays
