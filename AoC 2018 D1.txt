@@ -1,3 +1,9 @@
+'NOTE THIS IS IN VBA RUNNING UNDER THE HOOD OF EXCEL
+'I am a complete noob and am using whatever tools I have
+'this is based on pasting your input from day 1 into column A1 of sheet 1, and go from there
+'I tried not to hard code any values so it might work with other size datasets, but i honestly can't gaurantee that
+'because I am lazy.  Enjoy! 
+
 Sub test()
 Dim xx, y, i, j, summe, check, ender, iter As Double
 Dim limit As Double
