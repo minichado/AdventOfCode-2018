@@ -1,0 +1,76 @@
+Sub test()
+Dim xx, y, i, j, summe, check, ender, iter As Double
+Dim limit As Double
+Dim values() As Variant
+Dim output() As Variant
+
+'Advent of Code 2018 VBA OMG
+'I put the input into column A1 of sheet 1, and we go from there..
+
+'AoC 2018 D1P1
+
+For i = 1 To 1000
+    summe = summe + Worksheets("sheet1").Cells(i, "A").Value
+    Next i
+MsgBox ("the sum of the values is " & summe)
+
+'AoC 2018 D1P2
+'-----------------------------------------------------------
+'I like to hide that excel is actually selecting shit so it
+'sroll around like mad
+Application.ScreenUpdating = False
+
+'I need some arrays
+
+
+'I'm really stupid and don't know how to count values so I just count the row value
+Range("A1").Select
+Selection.End(xlDown).Select
+limit = Selection.Row
+'me teesting that the counting shit works because it's been a while
+'MsgBox ("test row value for count of array, expect 996, returning " & limit)
+Range("a1").Select
+
+'pulling data into vba array for efficiency
+i = 0
+For i = 0 To (limit - 1)
+    ReDim Preserve values(i)
+    values(i) = Worksheets("sheet1").Cells((i + 1), "A").Value
+    Next i
+
+'actual block of code for doing the check badly :D :D
+summe = 0
+iter = 0
+For i = 0 To ((limit * 200) - 1)
+    summe = summe + values(XLMod(i, limit))
+    ReDim Preserve output(i)
+    If IsInArray(summe, output) Then Exit For
+    output(i) = summe
+    iter = iter + 1
+    Next i
+ender = Int(iter / limit)
+MsgBox ("The first repeating value is " & summe & " after " & ender & " iterations of the input array")
+Application.ScreenUpdating = True
+'I need this to know I'm not stuck in inifinite loop land
+MsgBox ("Shit's over yo")
+End Sub
+
+Function XLMod(a, b)
+    
+    XLMod = a - b * Int(a / b)
+End Function
+Private Function IsInArray(valToBeFound As Variant, arr As Variant) As Boolean
+
+Dim element As Variant
+On Error GoTo IsInArrayError: 'array is empty
+    For Each element In arr
+        If element = valToBeFound Then
+            IsInArray = True
+            Exit Function
+        End If
+    Next element
+Exit Function
+IsInArrayError:
+On Error GoTo 0
+IsInArray = False
+End Function
