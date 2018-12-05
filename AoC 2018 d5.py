@@ -26,7 +26,6 @@ print ('The deconstructed length of the polymer is ', answer1)
 alphabet='abcdefghijklmnopqrstuvwxyz'
 lenalph=len(alphabet)
 
-answer2array=np.array((26,2),dtype=object)
 j=0
 answer2=50000
 answer2b=0
