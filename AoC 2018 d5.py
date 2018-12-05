@@ -1,6 +1,7 @@
 import numpy as np
 from datetime import datetime as dt
-
+import time
+start_time=time.time()
 filename='aoc 2018 d5 input.txt'
 
 for line in open(filename):
@@ -47,4 +48,5 @@ for j in range(lenalph):
 	if answer2b < answer2:
 		answer2 = answer2b
 	
-print("The min length without bad apple letter is", answer2)
+print('The min length without bad apple letter is', answer2)
+print ('Execution completed in ', time.time()-start_time, 'seconds')
