@@ -1,0 +1,60 @@
+Sub matrix3x3()
+'AoC 2018 D11 VBA/excel
+'this assumes you have built a matrix in excel starting at d3 going to
+'KP302 and have a formula making all of the values correct
+'assuming C2 through KP2 are 1-300
+'    and  C3 through C302 are 1-300
+'    and  C1 contains the RACK ID which was 7347
+' all cells in array have the following formula
+'=(MOD((($B271+10)*JU$2+$C$1)*($B271+10),100*10)-MOD((($B271+10)*JU$2+$C$1)*($B271+10),100))/100-5
+
+
+'WARNING: this is hella innefficient, the second triple nested loop runs in approximately 15-20 minutes.
+
+Dim i, j, sum, max As Double
+Dim maxi, maxj As Integer
+Dim maxk, k As Integer
+i = 0
+j = 0
+sum = 0
+max = 0
+'part 1
+
+For i = 1 To 298
+    For j = 1 To 298
+        sum = Application.sum(Range(Cells(i + 2, j + 2), Cells(i + 4, j + 4)))
+        'MsgBox (sum & "   " & i & "," & j)
+        If sum > max Then
+            max = sum
+            maxi = i
+            maxj = j
+        End If
+    Next j
+Next i
+
+MsgBox ("The max power level grid is " & max & " at location " & maxi & "," & maxj)
+'part 2
+max = 0
+i = 0
+j = 0
+k = 0
+maxk = 0
+
+For i = 3 To 302
+    For j = 3 To 302
+        For k = 1 To (302 - i)
+            sum = Application.sum(Range(Cells(i, j), Cells(i + k, j + k)))
+            If sum > max Then
+                max = sum
+                maxi = i - 2
+                maxj = j - 2
+                maxk = k + 1
+            End If
+        Next k
+    Next j
+Next i
+
+MsgBox ("The max power level grid is " & max & " at location " & maxi & "," & maxj & "," & maxk)
+
+    
+End Sub
