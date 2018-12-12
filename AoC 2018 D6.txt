@@ -1,0 +1,82 @@
+Sub Macro1()
+'AoC 2018 D6
+'
+Dim delta, i, j, k, l, m, dist, xmin, xmax, ymin, ymax, range As Integer
+Dim minrange, minval, count As Integer
+
+delta = 0
+count = 0
+dist = 0
+xmin = Cells(4, 10).Value
+xmax = Cells(5, 10).Value
+ymin = Cells(6, 10).Value
+ymax = Cells(7, 10).Value
+range = Cells(2, 9).Value
+'MsgBox (range)
+'Application.ScreenUpdating = False
+'D6P1
+
+Worksheets("Sheet1").range(Cells(1, 4), Cells(range, 6)).Clear
+For delta = 0 To 1
+    For i = (xmin - delta) To (xmax + delta)
+        For j = (ymin - delta) To (ymax + delta)
+            For k = 1 To range
+                dist = (Abs(Cells(k, 2).Value - i) + Abs(Cells(k, 3).Value - j))
+                Cells(k, 4).Value = dist
+            Next k
+
+            minval = Cells(2, 12).Value
+
+            For l = 1 To range
+                If Cells(l, 4).Value = minval Then
+                    count = count + 1
+                    Cells(14, 10).Value = l
+                End If
+            Next l
+            Cells(10, 10).Value = count
+            Cells(11, 10).Value = i
+            Cells(12, 10).Value = j
+
+
+            If count = 1 Then
+                For m = 1 To range
+                    If Cells(m, 4).Value = minval Then
+                        Cells(m, 5).Value = Cells(m, 5).Value + 1
+                    End If
+                Next m
+            End If
+
+            count = 0
+        Next j
+    Next i
+    If delta = 0 Then
+        Worksheets("Sheet1").range(Cells(1, 5), Cells(range, 5)).Select
+        Selection.Copy
+        Cells(1, 6).Select
+        ActiveSheet.Paste
+        Worksheets("Sheet1").range(Cells(1, 5), Cells(range, 5)).Clear
+    End If
+    'MsgBox (delta)
+Next delta
+Cells(19, 10).Value = Cells(3, 12).Value
+
+'D6P2
+
+Cells(27, 10).Value = 0
+For i = xmin To xmax
+    For j = ymin To ymax
+        For k = 1 To range
+            dist = (Abs(Cells(k, 2).Value - i) + Abs(Cells(k, 3).Value - j))
+            Cells(k, 4).Value = dist
+        Next k
+        If Cells(26, 10).Value < Cells(25, 10).Value Then
+            Cells(27, 10).Value = Cells(27, 10).Value + 1
+        End If
+        
+    Next j
+Next i
+'Application.ScreenUpdating = True
+
+
+MsgBox ("Code has finished execution!")
+End Sub
