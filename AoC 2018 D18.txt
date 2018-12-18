@@ -1,0 +1,126 @@
+Sub Macro1()
+Dim minutes, i, j, k, l, m, OpenCount, TreeCount, LogCount As Integer
+Dim size As Integer
+Dim answer1, answer2 As Integer
+
+
+'AoC 2018 D18p1
+'input pasted into B2:AY51
+
+'initialize dataset in holding array, run once
+Range("B2:AY51").Copy Range("DB2:EY51")
+Range("BB2:CY51").Clear
+
+'ask for number of minutes to simulate
+minutes = InputBox("Input number of minutes to simulate", "AoC D18P1")
+
+'run comparison
+For m = 1 To minutes
+    For i = 1 To 50
+        For j = 1 To 50
+            'do here if current state is an open acre
+            If Cells(1 + i, 105 + j) = "." Then
+                'MsgBox ("found clearing")
+                For k = 1 To 3
+                    For l = 1 To 3
+                        If Cells(1 + i + k - 2, 105 + j + l - 2) = "|" Then
+                            TreeCount = TreeCount + 1
+                        End If
+                    Next l
+                Next k
+                If TreeCount >= 3 Then
+                    'MsgBox ("treecount for clearing=" & TreeCount)
+                    Cells(1 + i, 53 + j) = "|"
+                Else: Cells(1 + i, 53 + j) = "."
+                End If
+            End If
+            'do here if current state is trees
+            If Cells(1 + i, 105 + j) = "|" Then
+                'MsgBox ("found trees")
+                For k = 1 To 3
+                    For l = 1 To 3
+                        'MsgBox (l & " " & k)
+                        If Cells(1 + i + k - 2, 105 + j + l - 2) = "#" Then
+                            LogCount = LogCount + 1
+                            'MsgBox ("logcount is " & LogCount)
+                        End If
+                    Next l
+                Next k
+                If LogCount >= 3 Then
+                    Cells(1 + i, 53 + j) = "#"
+                Else: Cells(1 + i, 53 + j) = "|"
+                End If
+            End If
+            'Do here if current state is lumberyard
+            If Cells(1 + i, 105 + j) = "#" Then
+                'MsgBox ("found lumberyard")
+               For k = 1 To 3
+                    For l = 1 To 3
+                        If Cells(1 + i + k - 2, 105 + j + l - 2) = "#" Then
+                            LogCount = LogCount + 1
+                        End If
+                        If Cells(1 + i + k - 2, 105 + j + l - 2) = "|" Then
+                            TreeCount = TreeCount + 1
+                        End If
+                    Next l
+                Next k
+                'I'm going to le it compare to itself in the 3x3 array it checks, and it will always
+                'count an extra log (itself) so lets correct that
+                LogCount = LogCount - 1
+                If LogCount >= 1 And TreeCount >= 1 Then
+                    'MsgBox ("log and treecount for lumberyard:  " & "logcount:" & LogCount & " treecount:" & TreeCount)
+                    Cells(1 + i, 53 + j) = "#"
+                Else: Cells(1 + i, 53 + j) = "."
+                End If
+            End If
+            'reset all internal counters for next evaluation
+            OpenCount = 0
+            TreeCount = 0
+            LogCount = 0
+        Next j
+    Next i
+'finally, copy the completely generated set back to the holding array
+'to loop over again
+For i = 1 To 50
+    For j = 1 To 50
+    If Cells(1 + i, 53 + j) = "|" Then
+        TreeCount = TreeCount + 1
+    ElseIf Cells(1 + i, 53 + j) = "#" Then
+        LogCount = LogCount + 1
+    End If
+    
+    Next j
+Next i
+answer1 = LogCount * TreeCount
+Range("BB2:CY51").Copy Range("DB2:EY51")
+Range("BA52").Value = m
+Sheets("Sheet12").Cells(m, 1).Value = m
+Sheets("Sheet12").Cells(m, 2).Value = answer1
+OpenCount = 0
+TreeCount = 0
+LogCount = 0
+
+'MsgBox (m & " minutes elapsed")
+
+Next m
+
+'now count everything
+OpenCount = 0
+TreeCount = 0
+LogCount = 0
+For i = 1 To 50
+    For j = 1 To 50
+    If Cells(1 + i, 53 + j) = "|" Then
+        TreeCount = TreeCount + 1
+    ElseIf Cells(1 + i, 53 + j) = "#" Then
+        LogCount = LogCount + 1
+    End If
+    
+    Next j
+Next i
+answer1 = LogCount * TreeCount
+MsgBox ("There are " & TreeCount & " wooded acres and " & LogCount & " Lumberyards.  The answer is  " & answer1)
+
+
+End Sub
+
